@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
-import { Search, Star, MapPin, Filter, BarChart3, Banknote, Check, SortAsc, ChevronDown, Trash2, Loader2, Sparkles, X, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Search, Star, MapPin, Filter, BarChart3, Banknote, Check, SortAsc, ChevronDown, Trash2, Loader2, Sparkles, X, CheckCircle } from 'lucide-react';
 import { allLocations } from '../data/companies';
 import { useCurrency } from '../hooks/useCurrency';
 import { useAuth } from '../hooks/useAuth';
@@ -35,8 +35,6 @@ export default function Tours() {
   const [deletingTourId, setDeletingTourId] = useState<string | null>(null);
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
-  
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [filters, setFilters] = useState({
     difficulty: [] as string[],
@@ -74,28 +72,6 @@ export default function Tours() {
       setTours([]);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const scrollFeatured = (direction: 'left' | 'right') => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      const scrollAmount = 340;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-
-      if (direction === 'left') {
-        if (container.scrollLeft <= 0) {
-          container.scrollTo({ left: maxScroll, behavior: 'smooth' });
-        } else {
-          container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-        }
-      } else {
-        if (container.scrollLeft >= maxScroll - 5) {
-          container.scrollTo({ left: 0, behavior: 'smooth' });
-        } else {
-          container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
-      }
     }
   };
 
@@ -160,72 +136,70 @@ export default function Tours() {
     <div className="min-h-screen bg-cream dark:bg-slate-850 pt-20 text-left">
       <BookingDrawer 
         isOpen={isBookingOpen} 
-        onClose={() => setIsBookingOpen(false)} 
-        tourName={selectedTour.name} 
-        pricePerPerson={selectedTour.price} 
+        onClose={() => setIsBookingOpen(false)}
+        tourName={selectedTour.name}
+        pricePerPerson={selectedTour.price}
       />
-
-      <section className="bg-slate-900 py-16 lg:py-24 relative text-center z-20">
-        <div className="absolute inset-0 opacity-20">
-          <img src="/bg-hero.jpg" alt="Background" className="w-full h-full object-cover" />
+      
+      <section className="section-padding">
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex items-center gap-3 mb-4">
+            <Sparkles className="w-6 h-6 text-sand-500" />
+            <h1 className="text-4xl font-serif font-bold dark:text-white">Explore Tours</h1>
+          </div>
+          <p className="text-slate-500 text-lg">Discover unique experiences across Kazakhstan with our verified local operators.</p>
         </div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4">
-          <h1 className="heading-xl text-white mb-6">Explore Kazakhstan</h1>
-          <div className="max-w-2xl mx-auto relative">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search destinations..." 
-                value={searchQuery} 
-                onChange={(e) => setSearchQuery(e.target.value)} 
-                className="w-full pl-12 pr-12 py-4 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border-none focus:ring-2 focus:ring-sand-500 text-slate-750 dark:text-white outline-none" 
-              />
-              
-              {searchQuery && (
-                <button 
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-1 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors z-30"
-                >
-                  <X className="w-5 h-5 text-slate-400 hover:text-sand-500" />
-                </button>
-              )}
-              
-              {suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-2xl z-[9999] overflow-hidden border dark:border-slate-700 text-left">
-                  {suggestions.map(s => (
-                    <button 
-                      key={s.id} 
-                      onClick={() => setSearchQuery(s.title)} 
-                      className="w-full px-5 py-3 hover:bg-slate-50 dark:hover:bg-slate-700 flex items-center gap-3 transition-colors border-b last:border-none dark:border-slate-700"
-                    >
-                      <MapPin className="w-4 h-4 text-sand-500" />
-                      <span className="dark:text-white font-medium">{s.title}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
 
-            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-              <span className="text-white/60 text-sm flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-sand-400" /> Trending:
-              </span>
-              {trendings.map(tag => (
-                <button 
-                  key={tag} 
-                  onClick={() => setSearchQuery(tag)} 
-                  className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-medium backdrop-blur-md transition-all border border-white/10"
+        {/* Search Bar */}
+        <div className="mb-12 relative">
+          <div className="flex flex-col md:flex-row gap-3">
+            <div className="relative flex-grow">
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search tours, destinations..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-14 pr-5 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-sand-500 dark:text-white"
+              />
+            </div>
+          </div>
+
+          {/* Search Suggestions */}
+          {searchQuery && suggestions.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden z-50">
+              {suggestions.map((tour) => (
+                <button
+                  key={tour.id}
+                  onClick={() => setSearchQuery(tour.title)}
+                  className="w-full px-5 py-3 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors border-b border-slate-100 dark:border-slate-700 last:border-b-0 flex items-center gap-3"
                 >
-                  {tag}
+                  <Search className="w-4 h-4 text-slate-400" />
+                  <div>
+                    <p className="font-medium">{tour.title}</p>
+                    <p className="text-xs text-slate-400">{tour.location}</p>
+                  </div>
                 </button>
               ))}
             </div>
-          </div>
+          )}
         </div>
-      </section>
 
-      <section className="py-12 lg:py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Trending Tags */}
+        <div className="mb-10 flex flex-wrap gap-3">
+          {trendings.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => setSearchQuery(tag)}
+              className="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-sm font-medium hover:bg-sand-100 dark:hover:bg-sand-500/20 hover:text-sand-600 transition-all"
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+
+        {/* Sorting & Results */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <p className="text-slate-500 font-medium">
             {isLoading ? 'Loading...' : `${filteredAndSortedTours.length} tours found`}
