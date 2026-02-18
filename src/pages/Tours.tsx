@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Search, Star, MapPin, Filter, BarChart3, Banknote, Check, SortAsc, ChevronDown, Trash2, Loader2, Sparkles, X, CheckCircle } from 'lucide-react';
+import { Search, Star, MapPin, Filter, BarChart3, Banknote, Check, SortAsc, ChevronDown, Trash2, Loader2, Sparkles, CheckCircle } from 'lucide-react';
 import { allLocations } from '../data/companies';
 import { useCurrency } from '../hooks/useCurrency';
 import { useAuth } from '../hooks/useAuth';
